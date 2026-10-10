@@ -71,4 +71,3 @@ python_version = "3.11"
 strict = true
 packages = ["mysql_mcp"]
 mypy_path = "src"
-

@@ -10,4 +10,3 @@
 - 工作进程仅处理一次数据库操作，凭据经标准输入传递，不进入命令行或临时文件；超时仅结束自己创建的子进程。
 - 执行 `uv run pytest`、`uv run ruff check .`、`uv run ruff format --check .`、`uv run mypy src`、`uv build` 和 `uv run twine check dist/*`。真实 MySQL 测试只能使用一次性隔离库，禁止连接业务库写入。
 - 多代理按文件分工，不回退他人修改，不自行派生代理。提交、GitHub 同步及最终验收由主代理统一处理。
-

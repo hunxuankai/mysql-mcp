@@ -5,4 +5,3 @@
 Python 3.11 及以上。项目设计和首版验收合同见 [设计](docs/design.md)，实施记录见 [计划](docs/implementation-plan.md)。
 
 本仓库使用 MIT 许可证。
-
