@@ -28,6 +28,8 @@ dependencies = [
   "mcp>=2.3.0,<3",
   "PyMySQL[rsa]>=1.2.3,<2",
   "sqlglot>=30.22.0,<31",
+  "anyio>=4.8,<5",
+  "jsonschema>=4.23,<5",
 ]
 
 [project.urls]
@@ -45,6 +47,7 @@ dev = [
   "ruff>=0.11,<1",
   "mypy>=1.15,<2",
   "types-PyMySQL>=1.1,<2",
+  "types-jsonschema>=4.23,<5",
   "twine>=6,<8",
 ]
 
@@ -52,7 +55,7 @@ dev = [
 packages = ["src/mysql_mcp"]
 
 [tool.hatch.build.targets.sdist]
-include = ["src/", "tests/", "examples/", "docs/", "README.md", "LICENSE", "CHANGELOG.md", "SECURITY.md", "pyproject.toml", "uv.lock"]
+include = ["src/", "tests/", "examples/", "docs/", "scripts/", "README.md", "LICENSE", "CHANGELOG.md", "SECURITY.md", "THIRD_PARTY_NOTICES.md", "pyproject.toml", "uv.lock"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

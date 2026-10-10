@@ -6,7 +6,7 @@
 
 仓库名 `mysql-mcp`，Python 分发名 `mysql-mcp-router`，导入包 `mysql_mcp`，命令 `mysql-mcp`。首版 0.1.0，MIT。GitHub 提供源码和构建包，支持 `uvx --from git+https://github.com/hunxuankai/mysql-mcp@v0.1.0 mysql-mcp ...`。PyPI 名称已检查未占用，但 GitHub 发布不冒充 PyPI 上传；发布文档分别说明两条渠道。
 
-Python >=3.11。运行依赖：MCP SDK >=2.3.0,<3、PyMySQL[rsa] >=1.2.3,<2、SQLGlot >=30.22.0,<31；三项直接依赖均为 MIT。依赖锁定到当前实际可安装版本，不扫描其他用户或工具的缓存。
+Python >=3.11。运行依赖：MCP SDK >=2.3.0,<3、PyMySQL[rsa] >=1.2.3,<2、SQLGlot >=30.22.0,<31；流控制与 schema 校验直接使用 AnyIO >=4.8,<5 和 jsonschema >=4.23,<5。直接依赖均为 MIT。依赖锁定到当前实际可安装版本，不扫描其他用户或工具的缓存。
 
 ## 模块与接口
 
@@ -25,9 +25,11 @@ Python >=3.11。运行依赖：MCP SDK >=2.3.0,<3、PyMySQL[rsa] >=1.2.3,<2、SQ
 # database.py
 def execute_request(payload: dict[str, Any]) -> dict[str, Any]: ...
 
+
 # runner.py
-async def run_job(payload: dict[str, Any], *, timeout_seconds: float,
-                  max_output_bytes: int) -> dict[str, Any]: ...
+async def run_job(
+    payload: dict[str, Any], *, timeout_seconds: float, max_output_bytes: int
+) -> dict[str, Any]: ...
 ```
 
 worker 输入包含：
@@ -51,7 +53,7 @@ worker 输入包含：
 }
 ```
 
-worker 结果二选一：`{"ok":true,"data":{...}}` 或 `{"ok":false,"error":{"code":"...","message":"受控消息","mysql_errno":1064,"outcome":"not_started|unknown"}}`。不需要的错误字段省略。`execute_request` 把预期配置/SQL/数据库错误转为此格式，不泄露异常字符串；worker 最外层捕获非预期错误也只输出固定 `INTERNAL_ERROR`。parent 将其转换为 SDK `CallToolResult`，包含 `structured_content` 和兼容的 JSON 文本。最终 JSON-RPC 整行仍受响应预算限制。
+worker 结果二选一：`{"ok":true,"data":{...}}` 或 `{"ok":false,"error":{"code":"...","message":"受控消息","mysql_errno":1064,"outcome":"not_started|unknown"}}`。不需要的错误字段省略。`execute_request` 把预期配置/SQL/数据库错误转为此格式，不泄露异常字符串；worker 最外层捕获非预期错误也只输出固定 `INTERNAL_ERROR`。parent 将其转换为 SDK `CallToolResult`，`structured_content` 保留 ok/data/error 外层并增加 `mcp_context={profile,mode,database}`，兼容文本为同一 JSON。最终 JSON-RPC 整行仍受响应预算限制。
 
 ## 配置契约
 
@@ -59,7 +61,7 @@ CLI 支持 `--config PATH`、`--connection NAME`（默认 local）、`--mode que
 
 TOML 使用 `[connections.local]`，字段为 host、port、database、user、password、production、allow_write、allow_ddl；前三项权限标记默认 false。`[connections.local.accounts.query]` / write / ddl 可覆盖 user、password，以支持分模式账号；也允许建立独立连接 profile。`[connections.local.tls]` 使用 enabled、ca、cert、key；开启时必须验证证书与主机名，不暴露关闭验证的选项。默认本机地址关闭 TLS，非本机地址默认开启，可通过显式 enabled=false 表示使用者确认其隔离网络条件。ca/cert/key 相对路径从配置文件目录解析；客户端证书和私钥必须成对。
 
-`[limits]` 可调上述限制；最小值均正数，max_rows 上限 1000，SQL <=65536 bytes，request <=262144 bytes，response <=1048576 bytes，cell <=65536 bytes，期限 <=120 秒，并发 <=8；默认如请求示例。用户可以调低容量；单元测试拒绝 bool 充当 int、NaN/Infinity、未知字段、缺失凭据、非法端口和不成对证书。不在错误或 check-config 输出真实密码、配置内容或秘密路径。密码允许空字符串以兼容明确配置的本机实例，但缺字段拒绝。
+`[limits]` 可调上述限制；最小值均正数，max_rows 上限 1000，SQL <=65536 bytes，request 为1024..262144 bytes，response 为16384..1048576 bytes，cell <=65536 bytes，期限 <=120 秒，并发 <=8；默认如请求示例。协议预算的下限确保合法错误和工具清单可返回。用户可以调低容量；单元测试拒绝 bool 充当 int、NaN/Infinity、未知字段、缺失凭据、非法端口和不成对证书。不在错误或 check-config 输出真实密码、配置内容或秘密路径。密码允许空字符串以兼容明确配置的本机实例，但缺字段拒绝。
 
 ## SQL 与权限
 

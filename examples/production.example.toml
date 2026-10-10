@@ -1,0 +1,17 @@
+[connections.production]
+host = "mysql.example.com"
+port = 3306
+database = "app_database"
+user = "mcp_reader"
+password = "CHANGE_ME"
+production = true
+allow_write = false
+allow_ddl = false
+
+[connections.production.tls]
+enabled = true
+# 不填写 ca 时使用系统信任的证书。
+# 以下相对路径以本配置文件所在目录为基准。
+# ca = "certificates/ca.pem"
+# cert = "certificates/client.pem"
+# key = "certificates/client-key.pem"

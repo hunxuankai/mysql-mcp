@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "mysql-query": {
+      "command": "uvx",
+      "args": [
+        "--python", "3.11",
+        "--from", "git+https://github.com/hunxuankai/mysql-mcp@v0.1.0",
+        "mysql-mcp",
+        "--config", "/absolute/path/to/config.toml",
+        "--connection", "local",
+        "--mode", "query"
+      ]
+    }
+  }
+}

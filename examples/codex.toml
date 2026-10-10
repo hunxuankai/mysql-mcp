@@ -1,0 +1,13 @@
+# 合并到使用者自己的 Codex config.toml，替换实际配置路径。
+[mcp_servers.mysql_query]
+command = "uvx"
+args = [
+  "--python", "3.11",
+  "--from", "git+https://github.com/hunxuankai/mysql-mcp@v0.1.0",
+  "mysql-mcp",
+  "--config", "C:/Users/your-name/.config/mysql-mcp/config.toml",
+  "--connection", "local",
+  "--mode", "query",
+]
+startup_timeout_sec = 120
+tool_timeout_sec = 30

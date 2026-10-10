@@ -1,0 +1,30 @@
+# 复制到仓库外的 config.toml 后填写自己的连接信息。
+[connections.local]
+host = "127.0.0.1"
+port = 3306
+database = "app_database"
+user = "mcp_reader"
+password = "CHANGE_ME"
+production = false
+allow_write = false
+allow_ddl = false
+
+[connections.local.tls]
+enabled = false
+
+# 按需取消注释，使用独立账号；同时在上方开启对应 allow_*。
+# [connections.local.accounts.write]
+# user = "mcp_writer"
+# password = "CHANGE_ME"
+# [connections.local.accounts.ddl]
+# user = "mcp_schema"
+# password = "CHANGE_ME"
+
+[limits]
+max_rows = 1000
+max_sql_bytes = 65536
+max_request_bytes = 262144
+max_response_bytes = 1048576
+max_cell_bytes = 65536
+request_timeout_seconds = 15
+max_concurrency = 2
