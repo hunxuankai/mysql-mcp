@@ -14,6 +14,7 @@ import pymysql
 import pytest
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
+
 from mysql_mcp.database import execute_request
 from mysql_mcp.runner import run_job
 
