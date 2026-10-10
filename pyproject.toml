@@ -1,0 +1,74 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mysql-mcp-router"
+version = "0.1.0"
+description = "A local MySQL MCP server with explicit SQL modes and bounded execution"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "hunxuankai" }]
+keywords = ["mcp", "mysql", "model-context-protocol"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Database",
+]
+dependencies = [
+  "mcp>=2.3.0,<3",
+  "PyMySQL[rsa]>=1.2.3,<2",
+  "sqlglot>=30.22.0,<31",
+]
+
+[project.urls]
+Homepage = "https://github.com/hunxuankai/mysql-mcp"
+Repository = "https://github.com/hunxuankai/mysql-mcp"
+Issues = "https://github.com/hunxuankai/mysql-mcp/issues"
+
+[project.scripts]
+mysql-mcp = "mysql_mcp.server:main"
+
+[dependency-groups]
+dev = [
+  "pytest>=8.3,<10",
+  "pytest-asyncio>=1,<2",
+  "ruff>=0.11,<1",
+  "mypy>=1.15,<2",
+  "types-PyMySQL>=1.1,<2",
+  "twine>=6,<8",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mysql_mcp"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/", "tests/", "examples/", "docs/", "README.md", "LICENSE", "CHANGELOG.md", "SECURITY.md", "pyproject.toml", "uv.lock"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+markers = ["integration: requires the explicitly configured disposable MySQL database"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+packages = ["mysql_mcp"]
+mypy_path = "src"
+
