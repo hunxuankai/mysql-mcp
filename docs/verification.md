@@ -17,3 +17,14 @@
 直接在线安装一度遇到本机 PyPI TLS 握手中断；隔离环境的依赖按已验证锁文件安装，没有关闭 TLS 校验。测试未修改任何业务库，已有数据库服务保持运行。
 
 GitHub Actions 另行执行 Windows/macOS/Linux × Python 3.11–3.14 及 MySQL 8.0/8.4；实际结果见 [CI](https://github.com/hunxuankai/mysql-mcp/actions/workflows/ci.yml)。本地验证不冒充其他平台已执行。
+
+## GitHub 发布确认
+
+2026-10-11，main CI 和 Release 工作流均成功：
+
+- [main CI](https://github.com/hunxuankai/mysql-mcp/actions/runs/38070176858)：质量门禁、12个系统/Python组合及MySQL8.0/8.4全部通过。
+- [Release](https://github.com/hunxuankai/mysql-mcp/actions/runs/38070991698)：发布v0.1.0，版本提交eefb6720d5182a6813df0a4c34d8689ac81e3de0。
+- 下载wheel/sdist并校验SHA256SUMS，均匹配。通过HTTPS Release wheel URL和SSH固定tag的uvx安装均返回0.1.0。
+- 原使用方的query/write/ddl入口均完成配置、4/1/1工具发现和ping验证；常量/TIME/二进制查询通过。
+
+本机Git HTTPS连接受既有网络配置影响；发布操作保留TLS校验并只调整子进程路由，没有修改全局代理。GitHub Release和PyPI是不同渠道，当前尚未上传PyPI。
