@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import asyncio
 import json
-import os
 import subprocess
 import sys
 from contextlib import suppress
@@ -76,7 +75,7 @@ async def run_job(
         content = encode_json(payload, 262144)
         async with asyncio.timeout(timeout_seconds):
             options: dict[str, Any] = {}
-            if os.name == "nt":
+            if sys.platform == "win32":
                 options["creationflags"] = subprocess.CREATE_NO_WINDOW
             process = await asyncio.create_subprocess_exec(
                 sys.executable,
